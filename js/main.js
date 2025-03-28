@@ -13,12 +13,14 @@ const qualityValue = document.getElementById('qualityValue');
 const formatSelect = document.getElementById('format');
 const compressBtn = document.getElementById('compressBtn');
 const downloadBtn = document.getElementById('downloadBtn');
+const batchDownloadBtn = document.getElementById('batchDownloadBtn');
 const batchProgress = document.getElementById('batchProgress');
 const progressFill = document.getElementById('progressFill');
 const progressText = document.getElementById('progressText');
 
 // 当前处理的图片数据
 let currentFiles = [];
+let compressedFiles = [];
 
 // 格式化文件大小
 function formatFileSize(bytes) {
@@ -122,11 +124,13 @@ function handleFileUpload(files) {
     if (!files.length) return;
     
     currentFiles = Array.from(files);
+    compressedFiles = [];
     
     // 显示控制区域
     compressionControls.style.display = 'block';
     previewArea.style.display = 'block';
     batchProgress.style.display = 'block';
+    batchDownloadBtn.style.display = 'none';
     
     // 清空预览区域
     previewContainer.innerHTML = '';
@@ -142,6 +146,11 @@ function handleFileUpload(files) {
                 formatSelect.value
             );
             
+            compressedFiles.push({
+                file: file,
+                blob: compressedBlob
+            });
+            
             const card = createPreviewCard(file, compressedBlob);
             previewContainer.appendChild(card);
             
@@ -151,11 +160,24 @@ function handleFileUpload(files) {
             
             if (processedCount === currentFiles.length) {
                 batchProgress.style.display = 'none';
+                batchDownloadBtn.style.display = 'block';
             }
         } catch (error) {
             console.error('压缩失败:', error);
             alert(`压缩 ${file.name} 失败，请重试`);
         }
+    });
+}
+
+// 批量下载功能
+function downloadAll() {
+    if (!compressedFiles.length) return;
+    
+    compressedFiles.forEach(({file, blob}) => {
+        const link = document.createElement('a');
+        link.download = `compressed_${file.name}`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
     });
 }
 
@@ -223,4 +245,6 @@ downloadBtn.addEventListener('click', () => {
     link.download = `compressed_${currentFiles[0].name}`;
     link.href = compressedPreview.src;
     link.click();
-}); 
+});
+
+batchDownloadBtn.addEventListener('click', downloadAll); 
