@@ -24,8 +24,8 @@
                         <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
                     </svg>
                     <p>点击或拖拽图片到这里</p>
-                    <p class="upload-hint">支持 PNG、JPG 格式</p>
-                    <input type="file" id="fileInput" accept="image/png,image/jpeg" hidden>
+                    <p class="upload-hint">支持 PNG、JPG、WebP、GIF、SVG 格式</p>
+                    <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" multiple hidden>
                 </div>
             </div>
 
@@ -36,33 +36,30 @@
                     <input type="range" id="quality" min="0" max="100" value="80">
                     <span id="qualityValue">80%</span>
                 </div>
+                <div class="format-control">
+                    <label for="format">输出格式：</label>
+                    <select id="format">
+                        <option value="original">保持原格式</option>
+                        <option value="jpeg">JPEG</option>
+                        <option value="png">PNG</option>
+                        <option value="webp">WebP</option>
+                    </select>
+                </div>
                 <button id="compressBtn" class="primary-button">开始压缩</button>
+            </div>
+
+            <!-- 批量处理进度 -->
+            <div class="batch-progress" id="batchProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p class="progress-text">正在处理：<span id="progressText">0/0</span></p>
             </div>
 
             <!-- 预览区域 -->
             <div class="preview-area" id="previewArea" style="display: none;">
-                <div class="preview-container">
-                    <div class="preview-box">
-                        <h3>原图</h3>
-                        <div class="image-container">
-                            <img id="originalPreview" alt="原图预览">
-                        </div>
-                        <div class="file-info">
-                            <span>文件大小：</span>
-                            <span id="originalSize">0 KB</span>
-                        </div>
-                    </div>
-                    <div class="preview-box">
-                        <h3>压缩后</h3>
-                        <div class="image-container">
-                            <img id="compressedPreview" alt="压缩后预览">
-                        </div>
-                        <div class="file-info">
-                            <span>文件大小：</span>
-                            <span id="compressedSize">0 KB</span>
-                        </div>
-                        <button id="downloadBtn" class="secondary-button">下载压缩图片</button>
-                    </div>
+                <div class="preview-container" id="previewContainer">
+                    <!-- 预览内容将由 JavaScript 动态生成 -->
                 </div>
             </div>
         </main>
